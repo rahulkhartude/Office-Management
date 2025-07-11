@@ -3,6 +3,13 @@ import React, { useState } from 'react';
 import { TextField, Button, Typography, Dialog, DialogTitle, DialogContent, DialogActions, Box } from '@mui/material';
 import { useParams } from 'react-router-dom';
 import DeskCard from "./Deskcard";
+import { Switch, FormControlLabel } from '@mui/material';
+
+import Radio from '@mui/material/Radio';
+import RadioGroup from '@mui/material/RadioGroup';
+// import FormControlLabel from '@mui/material/FormControlLabel';
+// import FormControl from '@mui/material/FormControl';
+// import FormLabel from '@mui/material/FormLabel';
 
 export default function OfficeDetail({ allOffices, setAllOffices }) {
   const { id } = useParams();
@@ -176,27 +183,81 @@ export default function OfficeDetail({ allOffices, setAllOffices }) {
       value={editingDesk?.Name || ''}
       onChange={e => setEditingDesk(prev => ({ ...prev, Name: e.target.value }))}
     />
-    <TextField
+    {/* <TextField
       margin="dense"
       label="Camera"
       fullWidth
       value={editingDesk?.camera || ''}
       onChange={e => setEditingDesk(prev => ({ ...prev, camera: e.target.value }))}
+    /> */}
+    <FormControlLabel
+    label="Camera"
+    sx={{ mt: 2 }}
+    labelPlacement="start"
+  control={
+    <Switch
+      checked={editingDesk?.camera === "Yes"}
+      onChange={e =>
+        setEditingDesk(prev => ({
+          ...prev,
+          camera: e.target.checked ? "Yes" : "No"
+        }))
+      }
     />
-    <TextField
+  }
+  
+/>
+
+    {/* <TextField
       margin="dense"
       label="Laptop"
       fullWidth
       value={editingDesk?.latop || ''}
       onChange={e => setEditingDesk(prev => ({ ...prev, latop: e.target.value }))}
-    />
-    <TextField
+    /> */}
+
+<RadioGroup
+  row
+  aria-labelledby="demo-row-radio-buttons-group-label"
+  name="latop-radio-group"
+  sx={{ mt: 2 }}
+  value={editingDesk?.latop || ''}
+  onChange={e => 
+    setEditingDesk(prev => ({ ...prev, latop: e.target.value }))
+  }
+>
+  <FormControlLabel value="Laptop" control={<Radio />} label="Laptop" />
+  <FormControlLabel value="Desktop" control={<Radio />} label="Desktop" />
+  <FormControlLabel value="NA" control={<Radio />} label="NA" />
+</RadioGroup>
+
+
+    {/* <TextField
       margin="dense"
       label="Headset"
       fullWidth
       value={editingDesk?.headSet || ''}
       onChange={e => setEditingDesk(prev => ({ ...prev, headSet: e.target.value }))}
+    /> */}
+
+<FormControlLabel
+    label="Headset"
+    labelPlacement="start"
+    sx={{ mt: 2 }}
+  control={
+    <Switch
+      checked={editingDesk?.headSet === "Yes"}
+      onChange={e =>
+        setEditingDesk(prev => ({
+          ...prev,
+          headSet: e.target.checked ? "Yes" : "No"
+        }))
+      }
     />
+  }
+  
+/>
+
   </DialogContent>
   <DialogActions>
     <Button onClick={() => setIsEditDeskOpen(false)}>Cancel</Button>
