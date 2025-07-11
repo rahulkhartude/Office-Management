@@ -2,24 +2,25 @@ import React, { useState } from 'react';
 import { TextField, Button, List, ListItem, ListItemText, Card, CardContent } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
 import AddOfficeDialog from "../components/addOffice.js"
+import OfficeDetail from '../components/OfficeDetail.js';
 
-export default function OfficeList() {
-  const [officeName, setOfficeName] = useState('');
-  const [officeAddress, setOfficeAddress] = useState('');
-  const [isAddOffice,setIsAddOffice] = useState(false);
-  const [allOffices,setAllOffices] = useState([{id: Date.now().toString(),name : "Pi Tech A", address : "pune"},{id: Date.now().toString(),name : "Pi Tech B", address : "Mumbai"}]);
+export default function OfficeList({allOffices,setAllOffices}) {
+  const [officeName,setOfficeName] = useState([]);
+  const [officeAddress,setOfficeAddress] = useState([]);
   const navigate = useNavigate();
-
-  const handleAddOffice = () => {
+console.log("all Off in det",allOffices);
+  const handleAddOffice = (officeName) => {
     if (officeName.trim()) {
       setAllOffices([...allOffices, { id: Date.now().toString(), name: officeName , address :officeAddress }]);
       setOfficeName('');
     }
   };
 
-  const handleGoToOffice =()=>{
-    navigate("/office")
-  }
+  const handleGoToOffice = (office) => {
+    console.log("my office",office);
+    navigate(`/office/${office.id}`);
+
+  };
 
   return ( 
   <>
@@ -45,7 +46,7 @@ export default function OfficeList() {
       </CardContent>
     </Card>
 
-   {isAddOffice && 
+   {/* {isAddOffice && 
   <AddOfficeDialog 
     open={isAddOffice} 
     onClose={() => setIsAddOffice(false)} 
@@ -53,7 +54,18 @@ export default function OfficeList() {
   />
 }
 
+{selectedOffice ? (
+        <OfficeDetail 
+          office={selectedOffice} 
+          allOffices={allOffices} 
+          setAllOffices={setAllOffices} 
+        />
+      ) : (
+        <OfficeList onSelect={handleGoToOffice} />
+      )} */}
+
 
     </>
   );
+
 }
