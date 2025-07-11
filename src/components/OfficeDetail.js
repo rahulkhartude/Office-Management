@@ -1,44 +1,3 @@
-// import React, { useState } from 'react';
-// import { TextField, Button, List, ListItem, ListItemText, Card, CardContent, Typography } from '@mui/material';
-// import { useParams } from 'react-router-dom';
-// import DeskCard from "./Deskcard"
-// import { Box } from '@mui/material';
-
-// export default function OfficeDetail({allOffices,setAllOffices}) {
-//   const [desks, setDesks] = useState([]);
-//   const [deskName, setDeskName] = useState('');
-//   const [equipmentNote, setEquipmentNote] = useState('');
-
-//   const { id } = useParams();  
-//   console.log("Id",id)
-//   const office = allOffices.find(o => o.id === id);
-// console.log("office",office);
-//   const handleAddDesk = () => {
-//     if (deskName.trim()) {
-//       setDesks([...desks, { id: Date.now().toString(), name: deskName, note: equipmentNote }]);
-//       setDeskName('');
-//       setEquipmentNote('');
-//     }
-//   };
-
-//   if (!office) return <Typography>Office not found</Typography>;
-
-//   return (
-//     <>
-    
-// <Typography variant="h5" sx={{ mb: 2 }} align="center">
-// {office.name}
-//   </Typography>
-// <Box display="flex" flexWrap="wrap" gap={2}>
-//     {office.equipments.map(eqp => (
-//       <DeskCard key={eqp.eqpId} eqpment={eqp} />
-//     ))}
-//   </Box>
-//   </>
-//   )
-// }
-
-
 
 import React, { useState } from 'react';
 import { TextField, Button, Typography, Dialog, DialogTitle, DialogContent, DialogActions, Box } from '@mui/material';
@@ -55,6 +14,9 @@ export default function OfficeDetail({ allOffices, setAllOffices }) {
   const [camera, setCamera] = useState('');
   const [latop, setLatop] = useState('');
   const [headSet, setHeadSet] = useState('');
+  const [isEditDeskOpen, setIsEditDeskOpen] = useState(false);
+  const [editingDesk, setEditingDesk] = useState(null); // store the desk object we want to edit
+
 
   if (!office) return <Typography>Office not found</Typography>;
 
@@ -86,6 +48,32 @@ export default function OfficeDetail({ allOffices, setAllOffices }) {
       setIsAddDeskOpen(false);
     }
   };
+
+  const handleEditDesk = (desk) => {
+    setEditingDesk(desk);
+    setIsEditDeskOpen(true);
+  };
+  
+  const handleUpdateDesk = () => {
+    if (!editingDesk) return;
+  
+    setAllOffices(prev =>
+      prev.map(o =>
+        o.id === office.id
+          ? {
+              ...o,
+              equipments: o.equipments.map(d =>
+                d.eqpId === editingDesk.eqpId ? editingDesk : d
+              )
+            }
+          : o
+      )
+    );
+  
+    setIsEditDeskOpen(false);
+    setEditingDesk(null);
+  };
+  
 
   return (
     <>
@@ -149,12 +137,73 @@ export default function OfficeDetail({ allOffices, setAllOffices }) {
         </DialogActions>
       </Dialog>
 
-      {/* Desk cards */}
+      {/* Desk cards
       <Box display="flex" flexWrap="wrap" gap={2}>
         {office.equipments.map(eqp => (
           <DeskCard key={eqp.eqpId} eqpment={eqp} />
+          <Button size="small" variant="outlined" onClick={() => handleEditDesk(eqp)}>
+          Edit
+        </Button>
         ))}
-      </Box>
+      </Box> */}
+
+<Box display="flex" flexWrap="wrap" gap={2}>
+  {office.equipments.map(eqp => (
+    <Box key={eqp.eqpId}>
+      <DeskCard eqpment={eqp} />
+      <Button size="small" variant="outlined" onClick={() => handleEditDesk(eqp)}>
+        Edit
+      </Button>
+    </Box>
+  ))}
+</Box>
+
+
+<Dialog open={isEditDeskOpen} onClose={() => setIsEditDeskOpen(false)}>
+  <DialogTitle>Edit Desk</DialogTitle>
+  <DialogContent>
+    <TextField
+      margin="dense"
+      label="Desk Name"
+      fullWidth
+      value={editingDesk?.deskName || ''}
+      onChange={e => setEditingDesk(prev => ({ ...prev, deskName: e.target.value }))}
+    />
+    <TextField
+      margin="dense"
+      label="Name"
+      fullWidth
+      value={editingDesk?.Name || ''}
+      onChange={e => setEditingDesk(prev => ({ ...prev, Name: e.target.value }))}
+    />
+    <TextField
+      margin="dense"
+      label="Camera"
+      fullWidth
+      value={editingDesk?.camera || ''}
+      onChange={e => setEditingDesk(prev => ({ ...prev, camera: e.target.value }))}
+    />
+    <TextField
+      margin="dense"
+      label="Laptop"
+      fullWidth
+      value={editingDesk?.latop || ''}
+      onChange={e => setEditingDesk(prev => ({ ...prev, latop: e.target.value }))}
+    />
+    <TextField
+      margin="dense"
+      label="Headset"
+      fullWidth
+      value={editingDesk?.headSet || ''}
+      onChange={e => setEditingDesk(prev => ({ ...prev, headSet: e.target.value }))}
+    />
+  </DialogContent>
+  <DialogActions>
+    <Button onClick={() => setIsEditDeskOpen(false)}>Cancel</Button>
+    <Button onClick={handleUpdateDesk}>Update</Button>
+  </DialogActions>
+</Dialog>
+
     </>
   );
 }
